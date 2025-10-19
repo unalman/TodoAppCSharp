@@ -1,0 +1,30 @@
+﻿@page
+@model Todo_App.Pages.TodoModel
+@{
+    ViewData["Title"] = "Todo App";
+    var todos = Model.GetTodos();
+}
+
+<div class="container">
+    <h1 class="text-center">Todo</h1>
+    <form method="post" class="todo-form">
+        <input type="text" asp-for="TodoText" class="todoInput" value="" />
+        <button type="submit" style="display: none;"></button>
+    </form>
+    @if (todos != null && todos.Any())
+    {
+        <ul class="todos">
+            @foreach (var item in todos)
+            {
+                <li class="todoLi">
+                    @item.text
+                    <form method="post" asp-page-handler="Delete">
+                        <input type="hidden" name="id" value="@item.id" />
+                        <button type="submit" class="btn btn-danger btn-sm btn-danger-custom">Sil</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+
+</div>
