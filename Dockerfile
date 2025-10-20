@@ -16,6 +16,7 @@ WORKDIR /source/Todo_App
 ARG TARGETARCH
 
 # NuGet kaynaklarını belirt
+RUN mkdir -p /root/.nuget
 COPY nuget.config /root/.nuget/
 
 # Restore ve Build Server
