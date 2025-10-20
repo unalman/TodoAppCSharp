@@ -17,7 +17,7 @@ ARG TARGETARCH
 
 # Restore ve Build Server
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet restore Todo_App.csproj
+    dotnet restore Todo_App.csproj --no-cache
 
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet build -c Release Todo_App.csproj
