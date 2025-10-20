@@ -27,11 +27,6 @@ FROM build AS test
 
 WORKDIR /source/Todo_Test
 
-# Önemli: Test projesi server projesine referans veriyorsa path doğru olmalı
-# Örn: <ProjectReference Include="../Todo_App/Todo_App.csproj" />
-RUN dotnet restore Todo_Test.csproj
-RUN dotnet build -c Release Todo_Test.csproj
-
 # Testleri çalıştır
 RUN dotnet test Todo_Test.csproj --verbosity normal
 
@@ -49,10 +44,3 @@ COPY --from=publish /app .
 
 USER $APP_UID
 ENTRYPOINT ["dotnet", "Todo_App.dll"]
-
-
-
-
-
-
-
