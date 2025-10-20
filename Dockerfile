@@ -15,9 +15,12 @@ COPY Todo_Test/ /source/Todo_Test/
 WORKDIR /source/Todo_App
 ARG TARGETARCH
 
+# NuGet kaynaklarını belirt
+COPY nuget.config /root/.nuget/
+
 # Restore ve Build Server
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet restore Todo_App.csproj --no-cache
+    dotnet restore Todo_App.csproj
 
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet build -c Release Todo_App.csproj
