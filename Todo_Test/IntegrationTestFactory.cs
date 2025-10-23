@@ -34,8 +34,6 @@ namespace Todo_Test
         {
             var optionsBuilder = new DbContextOptionsBuilder<TodoContext>()
                 .UseNpgsql(ConnectionString);
-
-            // İstersen ek konfigürasyonlar ekle (logging, davranış vs)
             return optionsBuilder.Options;
         }
         public TodoContext CreateTodoContext()
