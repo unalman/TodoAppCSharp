@@ -4,60 +4,48 @@ using Todo_App.Models;
 
 namespace Todo_Test
 {
-    public class TodoContextTests
+    public class TodoContextTests : IClassFixture<PostgresContainerFixture>, IDisposable
     {
-        /// <summary>
-        /// UseInMemoryDatabase  test sýrasýnda RAM’de bir DB yaratýr, gerçek PostgreSQL gerekmez.
-        /// </summary>
-        /// <returns></returns>
-        private DbContextOptions<TodoContext> GetInMemoryOptions()
+        private readonly PostgresContainerFixture _fixture;
+        private readonly TodoContext _todoContext;
+
+        public TodoContextTests(PostgresContainerFixture fixture)
         {
-            return new DbContextOptionsBuilder<TodoContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
+            _fixture = fixture;
+
+            _todoContext = _fixture.CreateTodoContext();
+            _todoContext.Database.EnsureDeleted();
+            _todoContext.Database.Migrate();
         }
+
         [Fact]
         public void CanAddTodo()
         {
-            var options = GetInMemoryOptions();
+            var todo = new TodoDTO() { text = "Test Todo" };
+            
+            _todoContext.todo.Add(todo);
+            _todoContext.SaveChanges();
 
-            using (var context = new TodoContext(options))
-            {
-                var todo = new TodoDTO() { id = 1, text = "Test Todo" };
-                context.todo.Add(todo);
-                context.SaveChanges();
-            }
-            using (var context = new TodoContext(options))
-            {
-                var todos = context.todo.ToList();
-                Assert.Single(todos);
-                Assert.Equal("Test Todo", todos[0].text);
-                context.Database.EnsureDeleted();
-                context.Dispose();
-            }
-          
+            var todos = _todoContext.todo.ToList();
+            Assert.Single(todos);
+            Assert.Equal("Test Todo", todos[0].text);
         }
         [Fact]
         public void CanRemoveTodo()
         {
-            var options = GetInMemoryOptions();
+            var todo = new TodoDTO() { text = "Test Todo" };
+            _todoContext.todo.Add(todo);
+            _todoContext.SaveChanges();
 
-            using (var context = new TodoContext(options))
-            {
-                var todo = new TodoDTO() { id = 1, text = "Test Todo" };
-                context.todo.Add(todo);
-                context.SaveChanges();
+            _todoContext.todo.Remove(todo);
+            _todoContext.SaveChanges();
 
-                context.todo.Remove(todo);
-                context.SaveChanges();
-            }
-            using (var context = new TodoContext(options))
-            {
-                var todos = context.todo.ToList();
-                Assert.Empty(todos);
-                context.Database.EnsureDeleted();
-                context.Dispose();
-            }
+            var todos = _todoContext.todo.ToList();
+            Assert.Empty(todos);
+        }
+        public void Dispose()
+        {
+            _todoContext?.Dispose();
         }
     }
 }

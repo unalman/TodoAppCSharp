@@ -37,10 +37,3 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:latest
           platforms: linux/amd64
-
-
-
-      # Not: Test aşamanız Dockerfile içinde olduğu için ayrı bir step gerekmiyor.
-      # Ancak isterseniz burada ayrıca .NET test komutlarını da çalıştırabilirsiniz.
-
-  # (Opsiyonel) deploy job’ı ekleyebilirsiniz, örneğin image’ı bir sunucuya ya da buluta deploy etmek için.
